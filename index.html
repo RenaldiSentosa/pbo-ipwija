@@ -3,9 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Table with Search</title>
+    <title>Data Table</title>
     <style>
-        /* CSS Tetap Sama */
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .data-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 500px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #007BFF;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
@@ -15,50 +59,41 @@
         const app = {
             mdl: {
                 users: [
-                    { username: 'Renaldi', pin: 'Renaldi123' },
-                    { username: 'Karina', pin: 'Karina123' },
-                    { username: 'Giselma', pin: 'Giselma123' },
+                    { no: 1, username: 'Renaldi', pin: 'Renaldi123' },
+                    { no: 2, username: 'Karina', pin: 'Karina123' },
+                    { no: 3, username: 'Giselma', pin: 'Giselma123' },
+                    { no: 4, username: 'Ferdian', pin: 'Ferdian456' },
+                    { no: 5, username: 'Amanda', pin: 'Amanda789' },
                 ],
             },
             vew: {
-                mainView: function () {
-                    console.log("Rendering main view...");
-                    return `
-                        <div class="data-container">
-                            <h2>User Data Table</h2>
-                            <input type="text" id="userSearch" placeholder="Search by Username" />
-                            <button id="searchBtn">Search</button>
-                            <div id="userTable">
-                                ${app.vew.renderTable(app.mdl.users)}
-                            </div>
-                        </div>
-                    `;
-                },
                 renderTable: function (users) {
                     console.log("Rendering table with users:", users);
-                    if (users.length === 0) {
-                        return `<p class="no-data">No data found!</p>`;
-                    }
 
                     const rows = users.map(user => `
                         <tr>
+                            <td>${user.no}</td>
                             <td>${user.username}</td>
                             <td>${user.pin}</td>
                         </tr>
                     `).join('');
 
                     return `
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Pin</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${rows}
-                            </tbody>
-                        </table>
+                        <div class="data-container">
+                            <h2>User Data Table</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Username</th>
+                                        <th>Pin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rows}
+                                </tbody>
+                            </table>
+                        </div>
                     `;
                 },
             },
@@ -67,24 +102,11 @@
                     console.log("Initializing app...");
                     const container = document.getElementById('root');
                     if (container) {
-                        console.log("Container found. Rendering view...");
-                        container.innerHTML = app.vew.mainView();
+                        console.log("Container found. Rendering table...");
+                        container.innerHTML = app.vew.renderTable(app.mdl.users);
                     } else {
                         console.error("Root container not found!");
                     }
-
-                    document.getElementById('searchBtn').addEventListener('click', app.ctr.searchUser);
-                },
-                searchUser: function () {
-                    const searchInput = document.getElementById('userSearch').value.trim().toLowerCase();
-                    console.log("Search input:", searchInput);
-
-                    const filteredUsers = app.mdl.users.filter(user => 
-                        user.username.toLowerCase().includes(searchInput)
-                    );
-
-                    console.log("Filtered users:", filteredUsers);
-                    document.getElementById('userTable').innerHTML = app.vew.renderTable(filteredUsers);
                 },
             },
         };
