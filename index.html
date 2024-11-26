@@ -16,23 +16,52 @@
             height: 100vh;
         }
 
-        .data-table {
+        .data-container {
             background-color: #ffffff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 400px;
             text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #007BFF;
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #007BFF;
+            color: white;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
         th, td {
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #ccc;
             text-align: left;
         }
@@ -46,19 +75,9 @@
             background-color: #f9f9f9;
         }
 
-        button {
-            margin-top: 10px;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            background: #007BFF;
-            color: white;
-        }
-
-        button:hover {
-            background: #0056b3;
+        .no-data {
+            margin-top: 20px;
+            color: #FF0000;
         }
     </style>
 </head>
@@ -75,47 +94,57 @@
                 ],
             },
             vew: {
-                dataTable: function () {
-                    const rows = app.mdl.users
-                        .map(
-                            (user, index) => `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${user.username}</td>
-                                <td>${user.pin}</td>
-                            </tr>
-                        `
-                        )
-                        .join('');
+                searchForm: function () {
+                    return `
+                        <div class="data-container">
+                            <h2>Search User Data</h2>
+                            <input type="text" id="userSearch" placeholder="Enter Username" />
+                            <button id="searchBtn">Search</button>
+                            <div id="userTable"></div>
+                        </div>
+                    `;
+                },
+                userTable: function (user) {
+                    if (!user) {
+                        return `<p class="no-data">No data found for the entered username!</p>`;
+                    }
 
                     return `
-                        <div class="data-table">
-                            <h2>Data Users</h2>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Username</th>
-                                        <th>Pin</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${rows}
-                                </tbody>
-                            </table>
-                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Pin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>${user.username}</td>
+                                    <td>${user.pin}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     `;
                 },
             },
             ctr: {
                 initialize: function () {
                     const container = document.getElementById('root');
-                    container.innerHTML = app.vew.dataTable();
+                    container.innerHTML = app.vew.searchForm();
+
+                    document.getElementById('searchBtn').addEventListener('click', app.ctr.searchUser);
+                },
+                searchUser: function () {
+                    const searchInput = document.getElementById('userSearch').value.trim();
+                    const user = app.mdl.users.find(u => u.username.toLowerCase() === searchInput.toLowerCase());
+
+                    const userTable = app.vew.userTable(user);
+                    document.getElementById('userTable').innerHTML = userTable;
                 },
             },
         };
 
-        app.ctr.initialize(); 
+        app.ctr.initialize();
     </script>
 </body>
 </html>
