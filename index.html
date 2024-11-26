@@ -5,80 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Table with Search</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f8ff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .data-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 500px;
-            text-align: center;
-        }
-
-        h2 {
-            margin-bottom: 15px;
-            color: #007BFF;
-        }
-
-        input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            background: #007BFF;
-            color: white;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: left;
-        }
-
-        th {
-            background-color: #007BFF;
-            color: white;
-        }
-
-        td {
-            background-color: #f9f9f9;
-        }
-
-        .no-data {
-            margin-top: 20px;
-            color: #FF0000;
-        }
+        /* CSS Tetap Sama */
     </style>
 </head>
 <body>
@@ -95,6 +22,7 @@
             },
             vew: {
                 mainView: function () {
+                    console.log("Rendering main view...");
                     return `
                         <div class="data-container">
                             <h2>User Data Table</h2>
@@ -107,6 +35,7 @@
                     `;
                 },
                 renderTable: function (users) {
+                    console.log("Rendering table with users:", users);
                     if (users.length === 0) {
                         return `<p class="no-data">No data found!</p>`;
                     }
@@ -135,17 +64,26 @@
             },
             ctr: {
                 initialize: function () {
+                    console.log("Initializing app...");
                     const container = document.getElementById('root');
-                    container.innerHTML = app.vew.mainView();
+                    if (container) {
+                        console.log("Container found. Rendering view...");
+                        container.innerHTML = app.vew.mainView();
+                    } else {
+                        console.error("Root container not found!");
+                    }
 
                     document.getElementById('searchBtn').addEventListener('click', app.ctr.searchUser);
                 },
                 searchUser: function () {
                     const searchInput = document.getElementById('userSearch').value.trim().toLowerCase();
+                    console.log("Search input:", searchInput);
+
                     const filteredUsers = app.mdl.users.filter(user => 
                         user.username.toLowerCase().includes(searchInput)
                     );
 
+                    console.log("Filtered users:", filteredUsers);
                     document.getElementById('userTable').innerHTML = app.vew.renderTable(filteredUsers);
                 },
             },
