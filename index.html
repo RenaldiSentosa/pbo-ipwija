@@ -87,7 +87,6 @@
     <script>
         const app = {
             mdl: {
-                // Data pengguna
                 users: [
                     { username: 'Renaldi', pin: 'Renaldi123' },
                     { username: 'Karina', pin: 'Karina123' },
@@ -95,7 +94,6 @@
                 ],
             },
             vew: {
-                // Form pencarian
                 searchForm: function () {
                     return `
                         <div class="data-container">
@@ -106,7 +104,6 @@
                         </div>
                     `;
                 },
-                // Tabel data pengguna
                 userTable: function (user) {
                     if (!user) {
                         return `<p class="no-data">No data found for the entered username!</p>`;
@@ -131,35 +128,23 @@
                 },
             },
             ctr: {
-                // Inisialisasi aplikasi
                 initialize: function () {
                     const container = document.getElementById('root');
                     container.innerHTML = app.vew.searchForm();
-
-                    // Tambahkan event listener untuk tombol pencarian
                     document.getElementById('searchBtn').addEventListener('click', app.ctr.searchUser);
                 },
-                // Fungsi pencarian pengguna
                 searchUser: function () {
                     const searchInput = document.getElementById('userSearch').value.trim();
-                    
-                    // Validasi input
                     if (!searchInput) {
                         document.getElementById('userTable').innerHTML = `<p class="no-data">Please enter a username!</p>`;
                         return;
                     }
-
-                    // Cari pengguna berdasarkan username
                     const user = app.mdl.users.find(u => u.username.toLowerCase() === searchInput.toLowerCase());
-
-                    // Tampilkan hasil di tabel
-                    const userTable = app.vew.userTable(user);
-                    document.getElementById('userTable').innerHTML = userTable;
+                    document.getElementById('userTable').innerHTML = app.vew.userTable(user);
                 },
             },
         };
 
-        // Inisialisasi aplikasi saat halaman dimuat
         app.ctr.initialize();
     </script>
 </body>
