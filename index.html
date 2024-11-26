@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Table</title>
+    <title>Data Table with Search</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,7 +21,7 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 400px;
+            width: 500px;
             text-align: center;
         }
 
@@ -94,20 +94,29 @@
                 ],
             },
             vew: {
-                searchForm: function () {
+                mainView: function () {
                     return `
                         <div class="data-container">
-                            <h2>Search User Data</h2>
-                            <input type="text" id="userSearch" placeholder="Enter Username" />
+                            <h2>User Data Table</h2>
+                            <input type="text" id="userSearch" placeholder="Search by Username" />
                             <button id="searchBtn">Search</button>
-                            <div id="userTable"></div>
+                            <div id="userTable">
+                                ${app.vew.renderTable(app.mdl.users)}
+                            </div>
                         </div>
                     `;
                 },
-                userTable: function (user) {
-                    if (!user) {
-                        return `<p class="no-data">No data found for the entered username!</p>`;
+                renderTable: function (users) {
+                    if (users.length === 0) {
+                        return `<p class="no-data">No data found!</p>`;
                     }
+
+                    const rows = users.map(user => `
+                        <tr>
+                            <td>${user.username}</td>
+                            <td>${user.pin}</td>
+                        </tr>
+                    `).join('');
 
                     return `
                         <table>
@@ -118,10 +127,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>${user.username}</td>
-                                    <td>${user.pin}</td>
-                                </tr>
+                                ${rows}
                             </tbody>
                         </table>
                     `;
@@ -130,17 +136,17 @@
             ctr: {
                 initialize: function () {
                     const container = document.getElementById('root');
-                    container.innerHTML = app.vew.searchForm();
+                    container.innerHTML = app.vew.mainView();
+
                     document.getElementById('searchBtn').addEventListener('click', app.ctr.searchUser);
                 },
                 searchUser: function () {
-                    const searchInput = document.getElementById('userSearch').value.trim();
-                    if (!searchInput) {
-                        document.getElementById('userTable').innerHTML = `<p class="no-data">Please enter a username!</p>`;
-                        return;
-                    }
-                    const user = app.mdl.users.find(u => u.username.toLowerCase() === searchInput.toLowerCase());
-                    document.getElementById('userTable').innerHTML = app.vew.userTable(user);
+                    const searchInput = document.getElementById('userSearch').value.trim().toLowerCase();
+                    const filteredUsers = app.mdl.users.filter(user => 
+                        user.username.toLowerCase().includes(searchInput)
+                    );
+
+                    document.getElementById('userTable').innerHTML = app.vew.renderTable(filteredUsers);
                 },
             },
         };
